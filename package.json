@@ -29,5 +29,8 @@
     "pg": "^8.14.1",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.37.7"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "4.6.1"
   }
 }
