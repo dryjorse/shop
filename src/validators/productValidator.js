@@ -1,4 +1,4 @@
-const Joi = require("joi");
+import Joi from "joi";
 
 const updateProductSchema = Joi.object({
   title: Joi.string().min(1).max(255),
@@ -10,7 +10,7 @@ const createProductSchema = Joi.object({
   description: Joi.string().required(),
 }).unknown(false);
 
-module.exports = {
+export default {
   updateProductSchema,
   createProductSchema,
 };

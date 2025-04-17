@@ -1,5 +1,8 @@
-const { updateProductSchema } = require("../validators/productValidator");
-const { Product } = require("../models");
+import productValidator from "../validators/productValidator.js";
+import db from "../models/index.js";
+
+const { updateProductSchema } = productValidator;
+const { Product } = db;
 
 const getProducts = async (req, res) => {
   try {
@@ -84,35 +87,33 @@ const editProduct = async (req, res) => {
   }
 };
 
-const { Product } = require("../models");
+// const deleteProduct = () => async (req, res) => {
+//   try {
+//     const productId = req.params.id;
 
-const deleteProduct = () => async (req, res) => {
-  try {
-    const productId = req.params.id;
+//     // Ищем продукт
+//     const product = await Product.findByPk(productId);
 
-    // Ищем продукт
-    const product = await Product.findByPk(productId);
+//     if (!product) {
+//       return res.status(404).json({ error: "Продукт не найден" });
+//     }
 
-    if (!product) {
-      return res.status(404).json({ error: "Продукт не найден" });
-    }
+//     // Удаляем файл изображения, если он есть
+//     if (product.image) {
+//       const imagePath = path.join(__dirname, "../", product.image);
+//       if (fs.existsSync(imagePath)) {
+//         fs.unlinkSync(imagePath);
+//       }
+//     }
 
-    // Удаляем файл изображения, если он есть
-    if (product.image) {
-      const imagePath = path.join(__dirname, "../", product.image);
-      if (fs.existsSync(imagePath)) {
-        fs.unlinkSync(imagePath);
-      }
-    }
+//     // Удаляем продукт из базы
+//     await product.destroy();
 
-    // Удаляем продукт из базы
-    await product.destroy();
+//     res.json({ message: "Продукт успешно удалён" });
+//   } catch (error) {
+//     console.error("Ошибка при удалении продукта:", error);
+//     res.status(500).json({ error: "Ошибка сервера" });
+//   }
+// };
 
-    res.json({ message: "Продукт успешно удалён" });
-  } catch (error) {
-    console.error("Ошибка при удалении продукта:", error);
-    res.status(500).json({ error: "Ошибка сервера" });
-  }
-};
-
-module.exports = { getProducts, createProduct, editProduct, deleteProduct };
+export default { getProducts, createProduct, editProduct };

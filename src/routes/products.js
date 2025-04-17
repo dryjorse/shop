@@ -1,14 +1,12 @@
-const express = require("express");
-const multer = require("multer");
-const fs = require("fs");
+import express from "express";
+import multer from "multer";
+import fs from "fs";
 const router = express.Router();
-const authMiddleware = require("../middleware/authMiddleware");
-const validateImage = require("../middleware/validateImage");
-const {
-  getProducts,
-  createProducts,
-  editProducts,
-} = require("../controllers/productController");
+import authMiddleware from "../middleware/authMiddleware.js";
+import validateImage from "../middleware/validateImage.js";
+import productController from "../controllers/productController.js";
+
+const { getProducts, createProduct, editProduct } = productController;
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -31,10 +29,10 @@ router.post(
   "/",
   authMiddleware,
   upload.single("image"),
-  validateImage(true),
-  createProducts
+  // validateImage(true),
+  createProduct
 );
 
-router.patch("/:id", authMiddleware, upload.single("image"), editProducts);
+router.patch("/:id", authMiddleware, upload.single("image"), editProduct);
 
-module.exports = router;
+export default router;

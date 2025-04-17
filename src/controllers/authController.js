@@ -1,9 +1,12 @@
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const { User } = require("../models");
-const { generateAccessToken, generateRefreshToken } = require("../utils/token");
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import db from "../models/index.js";
+import tokens from "../utils/token.js";
 
-exports.register = async (req, res) => {
+const { User } = db;
+const { generateAccessToken, generateRefreshToken } = tokens;
+
+const register = async (req, res) => {
   const { username, email, password, avatar } = req.body;
 
   try {
@@ -41,7 +44,7 @@ exports.register = async (req, res) => {
   }
 };
 
-exports.login = async (req, res) => {
+const login = async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ where: { email } });
@@ -72,7 +75,7 @@ exports.login = async (req, res) => {
   }
 };
 
-exports.refresh = async (req, res) => {
+const refresh = async (req, res) => {
   const { refreshToken } = req.body;
   if (!refreshToken)
     return res.status(401).json({ message: "Токен отсутствует" });
@@ -96,7 +99,7 @@ exports.refresh = async (req, res) => {
   }
 };
 
-exports.logout = async (req, res) => {
+const logout = async (req, res) => {
   const { refreshToken } = req.body;
   try {
     const user = await User.findOne({ where: { refreshToken } });
@@ -109,3 +112,5 @@ exports.logout = async (req, res) => {
     res.status(500).json({ message: "Ошибка при выходе" });
   }
 };
+
+export default { register, login, refresh, logout };

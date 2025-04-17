@@ -1,4 +1,4 @@
-module.exports = (required = true) => {
+export default (required = true) => {
   return (req, res, next) => {
     const file = req.file;
 
@@ -9,11 +9,9 @@ module.exports = (required = true) => {
     if (file) {
       const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
       if (!allowedTypes.includes(file.mimetype)) {
-        return res
-          .status(400)
-          .json({
-            error: "Недопустимый формат изображения (только JPEG, PNG, WEBP)",
-          });
+        return res.status(400).json({
+          error: "Недопустимый формат изображения (только JPEG, PNG, WEBP)",
+        });
       }
 
       const maxSizeMB = 5;

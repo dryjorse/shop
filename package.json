@@ -2,6 +2,7 @@
   "name": "todo-list",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "nodemon src/app.js"
   },
@@ -10,6 +11,10 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@adminjs/express": "^4.0.1",
+    "@adminjs/sequelize": "^4.1.1",
+    "@adminjs/upload": "^4.0.2",
+    "adminjs": "^7.8.15",
     "bcrypt": "^5.1.1",
     "body-parser": "^2.2.0",
     "cors": "^2.8.5",

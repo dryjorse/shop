@@ -1,11 +1,15 @@
-const { Sequelize, DataTypes } = require("sequelize");
-require("dotenv").config();
-const UserModel = require("./user");
-const ProductModel = require("./product");
+import { Sequelize, DataTypes } from "sequelize";
+import dotenv from "dotenv";
+
+import UserModel from "./user.js";
+import ProductModel from "./product.js";
+import pg from "pg";
+
+dotenv.config();
 
 const sequelize = new Sequelize(process.env.POSTGRES_URL, {
   dialect: "postgres",
-  dialectModule: require("pg"),
+  dialectModule: pg,
 });
 
 const db = {};
@@ -24,4 +28,4 @@ Object.keys(db).forEach((modelName) => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-module.exports = db;
+export default db;
