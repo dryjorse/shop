@@ -6,6 +6,10 @@
   "scripts": {
     "start": "nodemon src/app.js"
   },
+  "engines": {
+    "node": "18.x",
+    "pnpm": ">=7"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
