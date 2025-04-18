@@ -35,16 +35,16 @@ const getProducts = async (req, res) => {
 
 const createProduct = async (req, res) => {
   try {
-    const { title, description, categoriaId } = req.body;
+    const { title, description, categoriesId } = req.body;
     const userId = req.user.id;
 
-    if (!title || !description || !userId || !categoriaId) {
+    if (!title || !description || !userId || !categoriesId) {
       return res.status(400).json({
-        error: "Необходимо указать title, categoriaId, description и userId",
+        error: "Необходимо указать title, categoriesId, description и userId",
       });
     }
 
-    const categoria = await Categoria.findByPk(categoriaId);
+    const categoria = await Categoria.findByPk(categoriesId);
     if (!categoria) {
       return res.status(404).json({ error: "Категория не найдена" });
     }
@@ -56,7 +56,7 @@ const createProduct = async (req, res) => {
       title,
       description,
       userId,
-      categoriaId,
+      categoriesId,
     });
 
     res.status(201).json(product);

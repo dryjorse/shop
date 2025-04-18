@@ -1,9 +1,9 @@
 import express from "express";
 const router = express.Router();
 import authMiddleware from "../middleware/authMiddleware.js";
-import categoriaController from "../controllers/categoriaController.js";
+import categoriesController from "../controllers/categoriesController.js";
 
-const { getCategories, createCategoria } = categoriaController;
+const { getCategories, createCategoria } = categoriesController;
 
 router.get("/", getCategories);
 router.post("/create", authMiddleware, createCategoria);

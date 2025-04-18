@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 
 import UserModel from "./user.js";
 import ProductModel from "./product.js";
-import CategoriaModel from "./categoria.js";
+import CategoriesModel from "./categories.js";
 import pg from "pg";
 
 dotenv.config();
@@ -18,7 +18,7 @@ const db = {};
 // Инициализация моделей
 db.User = UserModel(sequelize, DataTypes);
 db.Product = ProductModel(sequelize, DataTypes);
-db.Categoria = CategoriaModel(sequelize, DataTypes);
+db.Categories = CategoriesModel(sequelize, DataTypes);
 
 // Установка ассоциаций
 Object.keys(db).forEach((modelName) => {

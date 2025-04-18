@@ -1,5 +1,5 @@
 export default (sequelize, DataTypes) => {
-  const Categoria = sequelize.define("Categoria", {
+  const Categories = sequelize.define("Categories", {
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
@@ -13,12 +13,12 @@ export default (sequelize, DataTypes) => {
     },
   });
 
-  Categoria.associate = (models) => {
-    Categoria.hasMany(models.Product, {
-      foreignKey: "categoriaId",
+  Categories.associate = (models) => {
+    Categories.hasMany(models.Product, {
+      foreignKey: "categoriesId",
       as: "products",
     });
   };
 
-  return Categoria;
+  return Categories;
 };

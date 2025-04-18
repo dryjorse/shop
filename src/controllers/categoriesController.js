@@ -1,10 +1,10 @@
 import db from "../models/index.js";
 
-const { Categoria } = db;
+const { Categories } = db;
 
 const getCategories = async (req, res) => {
   try {
-    const categories = await Categoria.findAll();
+    const categories = await Categories.findAll();
     res.json(categories);
   } catch (error) {
     console.error("Ошибка при получении категориев:", error);
@@ -22,7 +22,7 @@ const createCategoria = async (req, res) => {
       });
     }
 
-    const categoria = await Categoria.create({
+    const categoria = await Categories.create({
       title,
     });
 

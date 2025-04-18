@@ -27,9 +27,9 @@ export default (sequelize, DataTypes) => {
       as: "user",
     });
 
-    Product.belongsTo(models.Categoria, {
-      foreignKey: "categoriaId",
-      as: "categoria",
+    Product.belongsTo(models.Categories, {
+      foreignKey: "categoriesId",
+      as: "categories",
     });
   };
 

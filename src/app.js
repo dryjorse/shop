@@ -12,14 +12,14 @@ import * as AdminJSSequelize from "@adminjs/sequelize";
 import authRoutes from "./routes/auth.js";
 import profileRoutes from "./routes/profile.js";
 import productsRoutes from "./routes/products.js";
-import categoriaRoutes from "./routes/categoria.js";
+import categoriesRoutes from "./routes/categories.js";
 
 dotenv.config();
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const { sequelize, Product, User, Categoria } = db;
+const { sequelize, Product, User, Categories } = db;
 
 AdminJS.registerAdapter({
   Resource: AdminJSSequelize.Resource,
@@ -32,7 +32,7 @@ app.use("/uploads", express.static(path.join(__dirname, "../public/uploads")));
 app.use("/api/auth", authRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/products", productsRoutes);
-app.use("/api/categories", categoriaRoutes);
+app.use("/api/categories", categoriesRoutes);
 
 const PORT = process.env.PORT || 4000;
 
@@ -42,7 +42,7 @@ const PORT = process.env.PORT || 4000;
     await sequelize.sync();
 
     const adminOptions = {
-      resources: [Product, User, Categoria],
+      resources: [Product, User, Categories],
     };
 
     const admin = new AdminJS(adminOptions);
