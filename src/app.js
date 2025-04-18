@@ -1,6 +1,5 @@
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
-import db from "./models/index.js";
 import dotenv from "dotenv";
 import path from "path";
 import AdminJS from "adminjs";
@@ -14,6 +13,8 @@ import profileRoutes from "./routes/profile.js";
 import productsRoutes from "./routes/products.js";
 import categoriesRoutes from "./routes/categories.js";
 
+import db from "./models/index.js";
+
 dotenv.config();
 
 const app = express();
@@ -25,6 +26,29 @@ AdminJS.registerAdapter({
   Resource: AdminJSSequelize.Resource,
   Database: AdminJSSequelize.Database,
 });
+
+const adminOptions = {
+  rootPath: "/admin",
+  branding: {
+    companyName: "Admin Panel",
+    logo: "",
+    softwareBrothers: false,
+  },
+  resources: [
+    {
+      resource: Product,
+      options: { navigation: { name: "Content" }, label: "Products" },
+    },
+    {
+      resource: User,
+      options: { navigation: { name: "Management" }, label: "Users" },
+    },
+    {
+      resource: Categories,
+      options: { navigation: { name: "Management" }, label: "Categories" },
+    },
+  ],
+};
 
 app.use(bodyParser.json());
 app.use("/media", express.static(path.join(__dirname, "../media")));
@@ -40,10 +64,6 @@ const PORT = process.env.PORT || 4000;
   try {
     await sequelize.authenticate();
     await sequelize.sync();
-
-    const adminOptions = {
-      resources: [Product, User, Categories],
-    };
 
     const admin = new AdminJS(adminOptions);
 
@@ -61,7 +81,7 @@ const PORT = process.env.PORT || 4000;
       cookiePassword: "some-secret-password",
     });
 
-    app.use(admin.options.rootPath || "/admin", adminRouter);
+    app.use(adminOptions.rootPath, adminRouter);
 
     console.log("База данных подключена");
     app.listen(PORT, () => console.log(`Сервер запущен на порту ${PORT}`));

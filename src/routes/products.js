@@ -6,7 +6,8 @@ import authMiddleware from "../middleware/authMiddleware.js";
 import validateImage from "../middleware/validateImage.js";
 import productController from "../controllers/productController.js";
 
-const { getProducts, createProduct, editProduct } = productController;
+const { getProducts, createProduct, editProduct, getUserProducts } =
+  productController;
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -25,6 +26,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 router.get("/", getProducts);
+router.get("/:id", authMiddleware, getUserProducts);
 router.post(
   "/",
   authMiddleware,

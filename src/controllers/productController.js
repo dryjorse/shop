@@ -33,6 +33,36 @@ const getProducts = async (req, res) => {
   }
 };
 
+const getUserProducts = async (req, res) => {
+  try {
+    const { categoriaId, page = 1, limit = 10 } = req.query;
+    const { id } = req.params;
+
+    const where = {};
+    if (id) where.userId = id;
+    if (categoriaId) where.categoriaId = categoriaId;
+
+    const offset = (parseInt(page) - 1) * parseInt(limit);
+
+    const { rows: results, count } = await Product.findAndCountAll({
+      where,
+      limit: parseInt(limit),
+      offset,
+      order: [["createdAt", "DESC"]],
+    });
+
+    res.json({
+      count,
+      page: parseInt(page),
+      totalPages: Math.ceil(count / limit),
+      results,
+    });
+  } catch (error) {
+    console.error("Ошибка при получении продуктов:", error);
+    res.status(500).json({ error: "Ошибка сервера" });
+  }
+};
+
 const createProduct = async (req, res) => {
   try {
     const { title, description, categoriesId } = req.body;
@@ -141,4 +171,4 @@ const editProduct = async (req, res) => {
 //   }
 // };
 
-export default { getProducts, createProduct, editProduct };
+export default { getProducts, createProduct, editProduct, getUserProducts };
