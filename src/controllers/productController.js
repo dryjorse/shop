@@ -2,12 +2,31 @@ import productValidator from "../validators/productValidator.js";
 import db from "../models/index.js";
 
 const { updateProductSchema } = productValidator;
-const { Product } = db;
+const { Product, Categoria } = db;
 
 const getProducts = async (req, res) => {
   try {
-    const products = await Product.findAll();
-    res.json(products);
+    const { userId, categoriaId, page = 1, limit = 10 } = req.query;
+
+    const where = {};
+    if (userId) where.userId = userId;
+    if (categoriaId) where.categoriaId = categoriaId;
+
+    const offset = (parseInt(page) - 1) * parseInt(limit);
+
+    const { rows: results, count } = await Product.findAndCountAll({
+      where,
+      limit: parseInt(limit),
+      offset,
+      order: [["createdAt", "DESC"]],
+    });
+
+    res.json({
+      count,
+      page: parseInt(page),
+      totalPages: Math.ceil(count / limit),
+      results,
+    });
   } catch (error) {
     console.error("Ошибка при получении продуктов:", error);
     res.status(500).json({ error: "Ошибка сервера" });
@@ -16,13 +35,18 @@ const getProducts = async (req, res) => {
 
 const createProduct = async (req, res) => {
   try {
-    const { title, description } = req.body;
-    const userId = req.user.id; // если у тебя authMiddleware добавляет пользователя
+    const { title, description, categoriaId } = req.body;
+    const userId = req.user.id;
 
-    if (!title || !description || !userId) {
-      return res
-        .status(400)
-        .json({ error: "Необходимо указать title, description и userId" });
+    if (!title || !description || !userId || !categoriaId) {
+      return res.status(400).json({
+        error: "Необходимо указать title, categoriaId, description и userId",
+      });
+    }
+
+    const categoria = await Categoria.findByPk(categoriaId);
+    if (!categoria) {
+      return res.status(404).json({ error: "Категория не найдена" });
     }
 
     const imagePath = req.file ? `/media/products/${req.file.filename}` : null;
@@ -32,6 +56,7 @@ const createProduct = async (req, res) => {
       title,
       description,
       userId,
+      categoriaId,
     });
 
     res.status(201).json(product);

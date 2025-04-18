@@ -1,10 +1,7 @@
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 import db from "./models/index.js";
-import authRoutes from "./routes/auth.js";
-import profileRoutes from "./routes/profile.js";
 import dotenv from "dotenv";
-import productsRoutes from "./routes/products.js";
 import path from "path";
 import AdminJS from "adminjs";
 import AdminJSExpress from "@adminjs/express";
@@ -12,13 +9,17 @@ import express from "express";
 import bodyParser from "body-parser";
 import { fileURLToPath } from "url";
 import * as AdminJSSequelize from "@adminjs/sequelize";
+import authRoutes from "./routes/auth.js";
+import profileRoutes from "./routes/profile.js";
+import productsRoutes from "./routes/products.js";
+import categoriaRoutes from "./routes/categoria.js";
 
 dotenv.config();
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const { sequelize, Product, User } = db;
+const { sequelize, Product, User, Categoria } = db;
 
 AdminJS.registerAdapter({
   Resource: AdminJSSequelize.Resource,
@@ -31,6 +32,7 @@ app.use("/uploads", express.static(path.join(__dirname, "../public/uploads")));
 app.use("/api/auth", authRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/products", productsRoutes);
+app.use("/api/categories", categoriaRoutes);
 
 const PORT = process.env.PORT || 4000;
 
@@ -40,7 +42,7 @@ const PORT = process.env.PORT || 4000;
     await sequelize.sync();
 
     const adminOptions = {
-      resources: [Product, User],
+      resources: [Product, User, Categoria],
     };
 
     const admin = new AdminJS(adminOptions);
