@@ -15,9 +15,10 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@adminjs/express": "^4.0.1",
+    "@adminjs/express": "^6.1.1",
     "@adminjs/sequelize": "^4.1.1",
     "@adminjs/upload": "^4.0.2",
+    "@rollup/rollup-darwin-arm64": "^4.40.0",
     "adminjs": "^7.8.15",
     "bcrypt": "^5.1.1",
     "body-parser": "^2.2.0",
@@ -33,8 +34,5 @@
     "pg": "^8.14.1",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.37.7"
-  },
-  "optionalDependencies": {
-    "@rollup/rollup-linux-x64-gnu": "^4.9.2"
   }
 }

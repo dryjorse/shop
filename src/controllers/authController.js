@@ -30,8 +30,18 @@ const register = async (req, res) => {
       avatar,
     });
 
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
+
+    user.refreshToken = refreshToken;
+    await user.save();
+
     res.status(201).json({
       message: "Пользователь создан",
+      token: {
+        accessToken,
+        refreshToken,
+      },
       user: {
         id: user.id,
         username: user.username,
@@ -61,8 +71,10 @@ const login = async (req, res) => {
     await user.save();
 
     res.json({
-      accessToken,
-      refreshToken,
+      token: {
+        accessToken,
+        refreshToken,
+      },
       user: {
         id: user.id,
         username: user.username,
