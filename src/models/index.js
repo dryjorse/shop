@@ -8,7 +8,7 @@ import pg from "pg";
 
 dotenv.config();
 
-const sequelize = new Sequelize(process.env.POSTGRES_URL, {
+const sequelize = new Sequelize(process.env.DB_URL, {
   dialect: "postgres",
   dialectModule: pg,
 });
