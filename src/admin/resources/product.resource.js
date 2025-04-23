@@ -15,6 +15,8 @@ const mediaPath = path.join(__dirname, "../../../media/products");
 export const productResource = {
   resource: Product,
   options: {
+    navigation: { name: "Content" },
+    label: "Products",
     properties: {
       image: {
         isVisible: {
