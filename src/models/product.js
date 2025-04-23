@@ -33,5 +33,17 @@ export default (sequelize, DataTypes) => {
     });
   };
 
+  Product.prototype.toJSON = function () {
+    const values = { ...this.get() };
+
+    if (values.image) {
+      values.image = `${
+        process.env.BASE_URL || "http://localhost:4000"
+      }/products/${values.image}`;
+    }
+
+    return values;
+  };
+
   return Product;
 };

@@ -1,11 +1,3 @@
-// import { ComponentLoader } from "adminjs";
-// import path from "path";
+import { ComponentLoader } from "adminjs";
 
-// const componentLoader = new ComponentLoader();
-
-// componentLoader.override(
-//   "UploadEditComponent",
-//   path.resolve("src/admin/components/UploadEditComponent.jsx")
-// );
-
-// export { componentLoader };
+export const componentLoader = new ComponentLoader();
