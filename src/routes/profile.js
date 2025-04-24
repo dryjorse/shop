@@ -25,4 +25,8 @@ router.get("/", authMiddleware, async (req, res) => {
   }
 });
 
+router.get("/about_me", async (req, res) => {
+  res.redirect("https://media.tenor.com/VmAGGi_DdNYAAAAM/peepo-giggle.gif");
+});
+
 export default router;
