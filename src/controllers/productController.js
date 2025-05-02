@@ -5,6 +5,8 @@ const { updateProductSchema } = productValidator;
 const { Product, Categoria } = db;
 
 const getProducts = async (req, res) => {
+  // #swagger.tags = ['Products']
+  // #swagger.description = 'Get Products'
   try {
     const { userId, categoriaId, page = 1, limit = 10 } = req.query;
 
@@ -34,6 +36,8 @@ const getProducts = async (req, res) => {
 };
 
 const getUserProducts = async (req, res) => {
+  // #swagger.tags = ['Products']
+  // #swagger.description = 'Get Products'
   try {
     const { categoriaId, page = 1, limit = 10 } = req.query;
     const { id } = req.params;
@@ -64,6 +68,8 @@ const getUserProducts = async (req, res) => {
 };
 
 const createProduct = async (req, res) => {
+  // #swagger.tags = ['Products']
+  // #swagger.description = 'Get Products'
   try {
     const { title, description, categoriesId } = req.body;
     const userId = req.user.id;
@@ -97,6 +103,8 @@ const createProduct = async (req, res) => {
 };
 
 const editProduct = async (req, res) => {
+  // #swagger.tags = ['Products']
+  // #swagger.description = 'Get Products'
   try {
     const { id } = req.params;
     const userId = req.user.id;

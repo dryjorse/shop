@@ -13,7 +13,10 @@
   "paths": {
     "/api/auth/register": {
       "post": {
-        "description": "",
+        "tags": [
+          "Auth"
+        ],
+        "description": "Get auth requests",
         "parameters": [
           {
             "name": "body",
@@ -52,7 +55,10 @@
     },
     "/api/auth/login": {
       "post": {
-        "description": "",
+        "tags": [
+          "Auth"
+        ],
+        "description": "User login",
         "parameters": [
           {
             "name": "body",
@@ -85,7 +91,10 @@
     },
     "/api/auth/refresh": {
       "post": {
-        "description": "",
+        "tags": [
+          "Auth"
+        ],
+        "description": "Refresh token",
         "parameters": [
           {
             "name": "body",
@@ -118,7 +127,10 @@
     },
     "/api/auth/logout": {
       "post": {
-        "description": "",
+        "tags": [
+          "Auth"
+        ],
+        "description": "Logout user",
         "parameters": [
           {
             "name": "body",
@@ -145,7 +157,10 @@
     },
     "/api/profile/": {
       "get": {
-        "description": "",
+        "tags": [
+          "Profile"
+        ],
+        "description": "Get the user\\'s profile",
         "responses": {
           "200": {
             "description": "OK"

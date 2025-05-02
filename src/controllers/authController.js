@@ -7,7 +7,11 @@ const { User } = db;
 const { generateAccessToken, generateRefreshToken } = tokens;
 
 const register = async (req, res) => {
+  /** @type {{ username: string, email: string, password: string, avatar: string }} */
   const { username, email, password, avatar } = req.body;
+
+  // #swagger.tags = ['Auth']
+  // #swagger.description = 'Get auth requests'
 
   try {
     const existingEmail = await User.findOne({ where: { email } });
@@ -55,6 +59,9 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
+  // #swagger.tags = ['Auth']
+  // #swagger.description = 'User login'
+
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ where: { email } });
@@ -88,6 +95,9 @@ const login = async (req, res) => {
 };
 
 const refresh = async (req, res) => {
+  // #swagger.tags = ['Auth']
+  // #swagger.description = 'Refresh token'
+
   const { refreshToken } = req.body;
   if (!refreshToken)
     return res.status(401).json({ message: "Токен отсутствует" });
@@ -112,6 +122,9 @@ const refresh = async (req, res) => {
 };
 
 const logout = async (req, res) => {
+  // #swagger.tags = ['Auth']
+  // #swagger.description = 'Logout user'
+
   const { refreshToken } = req.body;
   try {
     const user = await User.findOne({ where: { refreshToken } });
