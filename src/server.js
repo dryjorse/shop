@@ -5,7 +5,7 @@ import * as AdminJSSequelize from "@adminjs/sequelize";
 
 import app from "./app.js";
 import db from "./models/index.js";
-import { productResource } from "./admin/resources/product.resource.js";
+import productResource from "./admin/resources/product.resource.js";
 import { componentLoader } from "./admin/componentLoader.js";
 
 dotenv.config();
@@ -42,7 +42,7 @@ const adminOptions = {
 (async () => {
   try {
     await sequelize.authenticate();
-    await sequelize.sync({ force: true }).catch((err) => {
+    await sequelize.sync().catch((err) => {
       console.error("Sync error:", err);
       throw err;
     });

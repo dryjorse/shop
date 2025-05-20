@@ -1,182 +1,333 @@
-import productValidator from "../validators/productValidator.js";
 import db from "../models/index.js";
+import fs from "fs/promises";
+import path from "path";
+import { v4 as uuidv4 } from "uuid";
+import multer from "multer";
 
-const { updateProductSchema } = productValidator;
-const { Product, Categoria } = db;
+const { Product } = db;
 
-const getProducts = async (req, res) => {
-  // #swagger.tags = ['Products']
-  // #swagger.description = 'Get Products'
-  try {
-    const { userId, categoriaId, page = 1, limit = 10 } = req.query;
+// Настройки для хранения файлов
+const mediaPath = path.resolve(process.cwd(), "media");
+const productsPath = path.join(mediaPath, "products");
+const galleryPath = path.join(mediaPath, "products-gallery");
 
-    const where = {};
-    if (userId) where.userId = userId;
-    if (categoriaId) where.categoriaId = categoriaId;
+// Конфигурация Multer для загрузки файлов
+// Конфигурация Multer для загрузки файлов
+// Конфигурация Multer для загрузки файлов
+const storage = multer.diskStorage({
+  destination: async (req, file, cb) => {
+    const isMultiple =
+      req.path.includes("gallery") || req.query.type === "gallery";
+    const uploadPath = isMultiple ? galleryPath : productsPath;
 
-    const offset = (parseInt(page) - 1) * parseInt(limit);
+    try {
+      await fs.mkdir(uploadPath, { recursive: true });
+      cb(null, uploadPath);
+    } catch (error) {
+      cb(error);
+    }
+  },
+  filename: (req, file, cb) => {
+    const id = uuidv4();
+    const ext = path.extname(file.originalname);
 
-    const { rows: results, count } = await Product.findAndCountAll({
-      where,
-      limit: parseInt(limit),
-      offset,
-      order: [["createdAt", "DESC"]],
-    });
+    // Формируем имя файла в формате UUID.jpg
+    const fileName = `${id}${ext}`;
 
-    res.json({
-      count,
-      page: parseInt(page),
-      totalPages: Math.ceil(count / limit),
-      results,
-    });
-  } catch (error) {
-    console.error("Ошибка при получении продуктов:", error);
-    res.status(500).json({ error: "Ошибка сервера" });
-  }
-};
+    // Сохраняем путь файла
+    req.filePath = fileName;
 
-const getUserProducts = async (req, res) => {
-  // #swagger.tags = ['Products']
-  // #swagger.description = 'Get Products'
-  try {
-    const { categoriaId, page = 1, limit = 10 } = req.query;
-    const { id } = req.params;
+    cb(null, fileName);
+  },
+});
 
-    const where = {};
-    if (id) where.userId = id;
-    if (categoriaId) where.categoriaId = categoriaId;
+export const upload = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+    if (allowedTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error("Неподдерживаемый тип файла"));
+    }
+  },
+});
 
-    const offset = (parseInt(page) - 1) * parseInt(limit);
-
-    const { rows: results, count } = await Product.findAndCountAll({
-      where,
-      limit: parseInt(limit),
-      offset,
-      order: [["createdAt", "DESC"]],
-    });
-
-    res.json({
-      count,
-      page: parseInt(page),
-      totalPages: Math.ceil(count / limit),
-      results,
-    });
-  } catch (error) {
-    console.error("Ошибка при получении продуктов:", error);
-    res.status(500).json({ error: "Ошибка сервера" });
-  }
-};
-
-const createProduct = async (req, res) => {
-  // #swagger.tags = ['Products']
-  // #swagger.description = 'Get Products'
-  try {
-    const { title, description, categoriesId } = req.body;
-    const userId = req.user.id;
-
-    if (!title || !description || !userId || !categoriesId) {
-      return res.status(400).json({
-        error: "Необходимо указать title, categoriesId, description и userId",
+// Контроллер продукта
+class ProductController {
+  async getAllProducts(req, res) {
+    // #swagger.tags = ['Products']
+    // #swagger.description = 'Get Products'
+    try {
+      const products = await Product.findAll({
+        include: ["categories", "user"],
       });
+      return res.status(200).json(products);
+    } catch (error) {
+      console.error("Ошибка получения продуктов:", error);
+      return res.status(500).json({ error: "Ошибка получения продуктов" });
     }
-
-    const categoria = await Categoria.findByPk(categoriesId);
-    if (!categoria) {
-      return res.status(404).json({ error: "Категория не найдена" });
-    }
-
-    const imagePath = req.file ? `/media/products/${req.file.filename}` : null;
-
-    const product = await Product.create({
-      image: imagePath,
-      title,
-      description,
-      userId,
-      categoriesId,
-    });
-
-    res.status(201).json(product);
-  } catch (error) {
-    console.error("Ошибка при создании продукта:", error);
-    res.status(500).json({ error: "Ошибка сервера" });
   }
-};
 
-const editProduct = async (req, res) => {
-  // #swagger.tags = ['Products']
-  // #swagger.description = 'Get Products'
-  try {
+  // Получить продукт по ID
+  async getProductById(req, res) {
+    // #swagger.tags = ['Products']
+    // #swagger.description = 'Get Products by Id'
     const { id } = req.params;
-    const userId = req.user.id;
 
-    const product = await Product.findByPk(id);
+    try {
+      const product = await Product.findByPk(id, {
+        include: ["categories", "user"],
+      });
 
-    if (!product) {
-      return res.status(404).json({ error: "Продукт не найден" });
-    }
-
-    if (product.userId !== userId) {
-      return res
-        .status(403)
-        .json({ error: "Нет доступа к изменению этого продукта" });
-    }
-
-    // Обработка изображения отдельно
-    if (req.file) {
-      if (product.image) {
-        const oldImagePath = `.${product.image}`;
-        if (fs.existsSync(oldImagePath)) {
-          fs.unlinkSync(oldImagePath);
-        }
+      if (!product) {
+        return res.status(404).json({ error: "Продукт не найден" });
       }
-      req.body.image = `/media/products/${req.file.filename}`;
+
+      return res.status(200).json(product);
+    } catch (error) {
+      console.error("Ошибка получения продукта:", error);
+      return res.status(500).json({ error: "Ошибка получения продукта" });
     }
-
-    // Валидация
-    const { error, value } = updateProductSchema.validate(req.body);
-    if (error) {
-      return res.status(400).json({ error: error.details[0].message });
-    }
-
-    // Обновить только те поля, которые были переданы
-    Object.assign(product, value);
-
-    await product.save();
-
-    res.json(product);
-  } catch (error) {
-    console.error("Ошибка при обновлении продукта:", error);
-    res.status(500).json({ error: "Ошибка сервера" });
   }
-};
 
-// const deleteProduct = () => async (req, res) => {
-//   try {
-//     const productId = req.params.id;
+  // Создать новый продукт
+  async createProduct(req, res) {
+    // #swagger.tags = ['Products']
+    // #swagger.description = 'Create Product'
+    const { title, description, categoriesId } = req.body;
 
-//     // Ищем продукт
-//     const product = await Product.findByPk(productId);
+    try {
+      // Создаем объект продукта
+      const productData = {
+        title,
+        description,
+        categoriesId,
+      };
 
-//     if (!product) {
-//       return res.status(404).json({ error: "Продукт не найден" });
-//     }
+      // Если есть основное изображение
+      if (req.file) {
+        productData.image = JSON.stringify([req.filePath]);
+      }
 
-//     // Удаляем файл изображения, если он есть
-//     if (product.image) {
-//       const imagePath = path.join(__dirname, "../", product.image);
-//       if (fs.existsSync(imagePath)) {
-//         fs.unlinkSync(imagePath);
-//       }
-//     }
+      // Создаем продукт
+      const product = await Product.create(productData);
 
-//     // Удаляем продукт из базы
-//     await product.destroy();
+      return res.status(201).json(product);
+    } catch (error) {
+      console.error("Ошибка создания продукта:", error);
+      return res.status(500).json({ error: "Ошибка создания продукта" });
+    }
+  }
 
-//     res.json({ message: "Продукт успешно удалён" });
-//   } catch (error) {
-//     console.error("Ошибка при удалении продукта:", error);
-//     res.status(500).json({ error: "Ошибка сервера" });
-//   }
-// };
+  // Обновить продукт
+  async updateProduct(req, res) {
+    // #swagger.tags = ['Products']
+    // #swagger.description = 'Update Product'
+    const { id } = req.params;
+    const { title, description, categoriesId, userId } = req.body;
 
-export default { getProducts, createProduct, editProduct, getUserProducts };
+    try {
+      // Ищем продукт
+      const product = await Product.findByPk(id);
+
+      if (!product) {
+        return res.status(404).json({ error: "Продукт не найден" });
+      }
+
+      // Обновляем данные продукта
+      const updateData = {};
+
+      if (title) updateData.title = title;
+      if (description) updateData.description = description;
+      if (categoriesId) updateData.categoriesId = categoriesId;
+      if (userId) updateData.userId = userId;
+
+      // Если есть основное изображение
+      if (req.file) {
+        updateData.image = JSON.stringify([req.filePath]);
+      }
+
+      // Обновляем продукт
+      await product.update(updateData);
+
+      // Получаем обновленный продукт для ответа
+      const updatedProduct = await Product.findByPk(id, {
+        include: ["categories", "user"],
+      });
+
+      return res.status(200).json(updatedProduct);
+    } catch (error) {
+      console.error("Ошибка обновления продукта:", error);
+      return res.status(500).json({ error: "Ошибка обновления продукта" });
+    }
+  }
+
+  // Удалить продукт
+  async deleteProduct(req, res) {
+    // #swagger.tags = ['Products']
+    // #swagger.description = 'Delete Product'
+    const { id } = req.params;
+
+    try {
+      // Ищем продукт
+      const product = await Product.findByPk(id);
+
+      if (!product) {
+        return res.status(404).json({ error: "Продукт не найден" });
+      }
+
+      // Удаляем файлы изображений
+      try {
+        // Удаление основного изображения
+        const image = JSON.parse(product.image || "[]");
+        if (image.length > 0) {
+          const imagePath = path.join(productsPath, image[0]);
+          await fs.unlink(imagePath).catch(() => {});
+
+          // Удаляем директорию, если она пуста
+          const imageDir = path.dirname(imagePath);
+          await fs.rmdir(imageDir).catch(() => {});
+        }
+
+        // Удаление галереи изображений
+        const images = JSON.parse(product.images || "[]");
+        for (const img of images) {
+          const imagePath = path.join(galleryPath, img);
+          await fs.unlink(imagePath).catch(() => {});
+
+          // Удаляем директорию, если она пуста
+          const imageDir = path.dirname(imagePath);
+          await fs.rmdir(imageDir).catch(() => {});
+        }
+      } catch (error) {
+        console.error("Ошибка при удалении файлов:", error);
+      }
+
+      // Удаляем продукт
+      await product.destroy();
+
+      return res.status(200).json({ message: "Продукт успешно удален" });
+    } catch (error) {
+      console.error("Ошибка удаления продукта:", error);
+      return res.status(500).json({ error: "Ошибка удаления продукта" });
+    }
+  }
+
+  async addGalleryImages(req, res) {
+    const { id } = req.params;
+
+    try {
+      // Ищем продукт
+      const product = await Product.findByPk(id);
+
+      if (!product) {
+        return res.status(404).json({ error: "Продукт не найден" });
+      }
+
+      // Получаем текущие изображения из галереи с корректной обработкой ошибок
+      let currentImages = [];
+      try {
+        if (product.images) {
+          // Пробуем разобрать JSON
+          currentImages = JSON.parse(product.images);
+
+          // Проверяем, что получили массив
+          if (!Array.isArray(currentImages)) {
+            currentImages = [];
+          }
+        }
+      } catch (e) {
+        console.error("Ошибка при парсинге JSON поля images:", e);
+        currentImages = [];
+      }
+
+      // Проверяем, что загруженные файлы существуют
+      if (!req.files || !Array.isArray(req.files)) {
+        return res.status(400).json({ error: "Изображения не загружены" });
+      }
+
+      // Получаем пути к новым файлам
+      const newImages = req.files.map((file) => file.filename);
+
+      // Обновляем продукт
+      await product.update({
+        images: JSON.stringify([...currentImages, ...newImages]),
+      });
+
+      // Получаем обновленный продукт для ответа
+      const updatedProduct = await Product.findByPk(id, {
+        include: ["categories", "user"],
+      });
+
+      return res.status(200).json(updatedProduct);
+    } catch (error) {
+      console.error("Ошибка добавления изображений в галерею:", error);
+      return res
+        .status(500)
+        .json({ error: "Ошибка добавления изображений в галерею" });
+    }
+  }
+  // Удалить изображение из галереи
+  async removeGalleryImage(req, res) {
+    // #swagger.tags = ['Products']
+    // #swagger.description = 'Remove Product Images'
+    const { id } = req.params;
+    const { imageIndex } = req.body;
+
+    try {
+      // Ищем продукт
+      const product = await Product.findByPk(id);
+
+      if (!product) {
+        return res.status(404).json({ error: "Продукт не найден" });
+      }
+
+      // Получаем текущие изображения из галереи
+      let currentImages = JSON.parse(product.images || "[]");
+
+      // Проверяем, существует ли указанный индекс
+      if (imageIndex < 0 || imageIndex >= currentImages.length) {
+        return res.status(400).json({ error: "Неверный индекс изображения" });
+      }
+
+      // Получаем путь к изображению для удаления
+      const imageToRemove = currentImages[imageIndex];
+
+      // Удаляем изображение из массива
+      currentImages.splice(imageIndex, 1);
+
+      // Обновляем продукт
+      await product.update({
+        images: JSON.stringify(currentImages),
+      });
+
+      // Удаляем файл изображения
+      try {
+        const imagePath = path.join(galleryPath, imageToRemove);
+        await fs.unlink(imagePath).catch(() => {});
+
+        // Удаляем директорию, если она пуста
+        const imageDir = path.dirname(imagePath);
+        await fs.rmdir(imageDir).catch(() => {});
+      } catch (error) {
+        console.error("Ошибка при удалении файла изображения:", error);
+      }
+
+      // Получаем обновленный продукт для ответа
+      const updatedProduct = await Product.findByPk(id, {
+        include: ["categories", "user"],
+      });
+
+      return res.status(200).json(updatedProduct);
+    } catch (error) {
+      console.error("Ошибка удаления изображения из галереи:", error);
+      return res
+        .status(500)
+        .json({ error: "Ошибка удаления изображения из галереи" });
+    }
+  }
+}
+
+export default new ProductController();

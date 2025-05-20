@@ -1,40 +1,32 @@
 import express from "express";
-import multer from "multer";
-import fs from "fs";
-const router = express.Router();
-import authMiddleware from "../middleware/authMiddleware.js";
-import validateImage from "../middleware/validateImage.js";
 import productController from "../controllers/productController.js";
+import { upload } from "../controllers/productController.js";
 
-const { getProducts, createProduct, editProduct, getUserProducts } =
-  productController;
+const router = express.Router();
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const dir = "media/products";
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
-    cb(null, dir);
-  },
-  filename: (req, file, cb) => {
-    const uniqueName = Date.now() + "-" + file.originalname;
-    cb(null, uniqueName);
-  },
-});
+// Получить все продукты
+router.get("/", productController.getAllProducts);
 
-const upload = multer({ storage });
+// Получить продукт по ID
+router.get("/:id", productController.getProductById);
 
-router.get("/", getProducts);
-router.get("/:id", authMiddleware, getUserProducts);
+// Создать новый продукт
+router.post("/", upload.single("image"), productController.createProduct);
+
+// Обновить продукт
+router.put("/:id", upload.single("image"), productController.updateProduct);
+
+// Удалить продукт
+router.delete("/:id", productController.deleteProduct);
+
+// Добавить изображения в галерею
 router.post(
-  "/",
-  authMiddleware,
-  upload.single("image"),
-  // validateImage(true),
-  createProduct
+  "/:id/gallery",
+  upload.array("images", 10),
+  productController.addGalleryImages
 );
 
-router.patch("/:id", authMiddleware, upload.single("image"), editProduct);
+// Удалить изображение из галереи
+router.delete("/:id/gallery", productController.removeGalleryImage);
 
 export default router;
