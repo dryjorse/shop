@@ -7,9 +7,16 @@ export default (sequelize, DataTypes) => {
       allowNull: false,
     },
     image: {
-      type: DataTypes.STRING,
-      allowNull: true,
+      type: DataTypes.TEXT,
+      allowNull: false,
+      defaultValue: "[]",
     },
+
+    // images: {
+    //   type: DataTypes.JSON,
+    //   allowNull: true,
+    //   defaultValue: [],
+    // },
     title: {
       type: DataTypes.STRING,
       allowNull: false,

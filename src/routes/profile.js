@@ -7,6 +7,9 @@ const { User } = db;
 
 router.get("/", authMiddleware, async (req, res) => {
   try {
+    // #swagger.tags = ['Profile']
+    // #swagger.description = 'Get the user\'s profile'
+
     const user = await User.findByPk(req.user.id, {
       attributes: {
         exclude: ["password", "refreshToken"],
@@ -26,6 +29,8 @@ router.get("/", authMiddleware, async (req, res) => {
 });
 
 router.get("/about_me", async (req, res) => {
+  // #swagger.tags = ['Profile']
+  // #swagger.description = 'Get the user\'s profile'
   res.redirect("https://media.tenor.com/VmAGGi_DdNYAAAAM/peepo-giggle.gif");
 });
 

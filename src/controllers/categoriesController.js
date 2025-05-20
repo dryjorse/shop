@@ -3,6 +3,8 @@ import db from "../models/index.js";
 const { Categories } = db;
 
 const getCategories = async (req, res) => {
+  // #swagger.tags = ['Categories']
+  // #swagger.description = 'Get Categories'
   try {
     const categories = await Categories.findAll();
     res.json(categories);
@@ -13,6 +15,8 @@ const getCategories = async (req, res) => {
 };
 
 const createCategoria = async (req, res) => {
+  // #swagger.tags = ['Categories']
+  // #swagger.description = 'Get Categories'
   try {
     const { title } = req.body;
 

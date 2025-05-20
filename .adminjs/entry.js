@@ -1,4 +1,6 @@
 AdminJS.UserComponents = {}
+import ImageShow from '../src/admin/components/ImageShow'
+AdminJS.UserComponents.ImageShow = ImageShow
 import UploadEditComponent from '../node_modules/@adminjs/upload/build/features/upload-file/components/UploadEditComponent'
 AdminJS.UserComponents.UploadEditComponent = UploadEditComponent
 import UploadListComponent from '../node_modules/@adminjs/upload/build/features/upload-file/components/UploadListComponent'

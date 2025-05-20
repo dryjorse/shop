@@ -1,55 +1,50 @@
-import uploadFeature from "@adminjs/upload";
 import db from "../../models/index.js";
-import path from "path";
-import { componentLoader } from "../componentLoader.js";
-import { fileURLToPath } from "url";
-import { LocalProvider2 } from "../../utils/custom-local-provider.js";
+import { createImageResource } from "./common/imageResource.js";
 
 const { Product } = db;
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+export const productResource = createImageResource({
+  model: Product,
+  imageField: "image",
+  bucket: "products",
+  label: "Products",
 
-const mediaPath = path.join(__dirname, "../../../media/products");
+  // Определяем порядок полей при просмотре
+  showProperties: [
+    "title", // Сначала заголовок
+    "image", // Потом изображение
+    "description", // Затем описание
+    "id",
+    "categoriesId",
+    "userId",
+    "createdAt",
+    "updatedAt",
+  ],
 
-export const productResource = {
-  resource: Product,
-  options: {
-    navigation: { name: "Content" },
-    label: "Products",
-    properties: {
-      image: {
-        isVisible: {
-          list: false,
-          filter: false,
-          show: false,
-          edit: false,
-        },
-      },
-      uploadImage: {
-        isVisible: {
-          list: false,
-          filter: false,
-          show: true,
-          edit: true,
-        },
-      },
+  // Дополнительные настройки
+  baseOptions: {
+    // Можно добавить любые другие настройки для AdminJS
+    listProperties: ["title", "image", "description", "createdAt"],
+    filterProperties: ["title", "description", "categoriesId"],
+    editProperties: [
+      "title",
+      "description",
+      "uploadImage",
+      "categoriesId",
+      "userId",
+    ],
+  },
+
+  // Настройки для загрузки изображений
+  uploadOptions: {
+    validation: {
+      maxSize: 5 * 1024 * 1024, // 5MB
     },
   },
-  features: [
-    uploadFeature({
-      provider: new LocalProvider2({
-        bucket: mediaPath,
-        baseUrl: "/products",
-      }),
-      componentLoader,
-      validation: {
-        mimeTypes: ["image/png", "image/jpeg"],
-      },
-      properties: {
-        key: "image",
-        file: "uploadImage",
-      },
-    }),
-  ],
-};
+
+  // Дополнительные хуки
+  afterUpload: (response, record) => {
+    console.log("Файл загружен:", response);
+    return response;
+  },
+});

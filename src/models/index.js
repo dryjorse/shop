@@ -11,6 +11,13 @@ dotenv.config();
 const sequelize = new Sequelize(process.env.DB_URL, {
   dialect: "postgres",
   dialectModule: pg,
+  ssl: true,
+  dialectOptions: {
+    ssl: {
+      require: true, // Требовать SSL
+      rejectUnauthorized: false, // Игнорировать проверку сертификата
+    },
+  },
 });
 
 const db = {};
