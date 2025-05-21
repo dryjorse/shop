@@ -50,21 +50,19 @@ const adminOptions = {
     const admin = new AdminJS(adminOptions);
     admin.watch();
 
-    const adminRouter = AdminJSExpress.buildRouter(admin);
-
-    // const adminRouter = AdminJSExpress.buildAuthenticatedRouter(admin, {
-    //   authenticate: async (email, password) => {
-    //     if (
-    //       email === process.env.ADMIN_EMAIL &&
-    //       password === process.env.ADMIN_PASSWORD
-    //     ) {
-    //       return { email };
-    //     }
-    //     return null;
-    //   },
-    //   cookieName: "adminjs",
-    //   cookiePassword: "some-secret-password",
-    // });
+    const adminRouter = AdminJSExpress.buildAuthenticatedRouter(admin, {
+      authenticate: async (email, password) => {
+        if (
+          email === process.env.ADMIN_EMAIL &&
+          password === process.env.ADMIN_PASSWORD
+        ) {
+          return { email };
+        }
+        return null;
+      },
+      cookieName: "adminjs",
+      cookiePassword: "some-secret-password",
+    });
 
     app.use(adminOptions.rootPath, adminRouter);
 
