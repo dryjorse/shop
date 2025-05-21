@@ -17,7 +17,8 @@ const app = express();
 
 app.use(
     cors({
-      origin: 'http://34.151.247.165:4000/',
+      origin: '*',
+      "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
     })
   )
 
