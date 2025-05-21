@@ -42,10 +42,7 @@ const adminOptions = {
 (async () => {
   try {
     await sequelize.authenticate();
-    await sequelize.sync().catch((err) => {
-      console.error("Sync error:", err);
-      throw err;
-    });
+    await sequelize.sync({ force: true });
 
     const admin = new AdminJS(adminOptions);
     admin.watch();
