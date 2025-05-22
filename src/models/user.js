@@ -25,6 +25,10 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: true,
     },
+    refreshToken: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
   });
 
   User.associate = (models) => {

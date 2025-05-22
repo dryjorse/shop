@@ -8,6 +8,8 @@ import db from "./models/index.js";
 import productResource from "./admin/resources/product.resource.js";
 import { componentLoader } from "./admin/componentLoader.js";
 
+import bcrypt from "bcryptjs";
+
 dotenv.config();
 
 const { sequelize, User, Categories } = db;
@@ -30,7 +32,52 @@ const adminOptions = {
     productResource,
     {
       resource: User,
-      options: { navigation: { name: "Management" }, label: "Users" },
+      options: {
+        navigation: { name: "Management" },
+        label: "Users",
+        properties: {
+          password: {
+            isVisible: {
+              edit: true,
+              show: false,
+              list: false,
+              filter: false,
+            },
+            type: "password",
+          },
+          refreshToken: {
+            isVisible: { edit: false, show: false, list: false, filter: false },
+          },
+        },
+        actions: {
+          new: {
+            before: async (request, context) => {
+              if (request.payload && request.payload.password) {
+                request.payload.password = await bcrypt.hash(
+                  request.payload.password,
+                  10
+                );
+              }
+              return request;
+            },
+          },
+          edit: {
+            before: async (request, context) => {
+              if (request.payload && request.payload.password) {
+                if (request.payload.password !== "") {
+                  request.payload.password = await bcrypt.hash(
+                    request.payload.password,
+                    10
+                  );
+                } else {
+                  delete request.payload.password;
+                }
+              }
+              return request;
+            },
+          },
+        },
+      },
     },
     {
       resource: Categories,
@@ -42,7 +89,7 @@ const adminOptions = {
 (async () => {
   try {
     await sequelize.authenticate();
-    await sequelize.sync({ force: true });
+    await sequelize.sync();
 
     const admin = new AdminJS(adminOptions);
     admin.watch();

@@ -106,16 +106,31 @@ const refresh = async (req, res) => {
     const user = await User.findOne({ where: { refreshToken } });
     if (!user) return res.status(403).json({ message: "Недопустимый токен" });
 
-    jwt.verify(
-      refreshToken,
-      process.env.REFRESH_TOKEN_SECRET,
-      (err, decoded) => {
-        if (err) return res.status(403).json({ message: "Невалидный токен" });
+    try {
+      const decoded = await new Promise((resolve, reject) => {
+        jwt.verify(
+          refreshToken,
+          process.env.REFRESH_TOKEN_SECRET,
+          (err, decoded) => {
+            if (err) reject(err);
+            else resolve(decoded);
+          }
+        );
+      });
 
-        const accessToken = generateAccessToken(user);
-        res.json({ accessToken });
-      }
-    );
+      const newAccessToken = generateAccessToken(user);
+      const newRefreshToken = generateRefreshToken(user);
+
+      user.refreshToken = newRefreshToken;
+      await user.save();
+
+      res.json({
+        accessToken: newAccessToken,
+        refreshToken: newRefreshToken,
+      });
+    } catch (err) {
+      return res.status(403).json({ message: "Невалидный токен" });
+    }
   } catch (e) {
     res.status(500).json({ message: "Ошибка обновления токена" });
   }
