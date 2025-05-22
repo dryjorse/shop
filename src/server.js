@@ -89,7 +89,7 @@ const adminOptions = {
 (async () => {
   try {
     await sequelize.authenticate();
-    await sequelize.sync();
+    await sequelize.sync({ force: true });
 
     const admin = new AdminJS(adminOptions);
     admin.watch();
