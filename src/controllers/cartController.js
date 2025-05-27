@@ -49,4 +49,27 @@ const getCart = async (req, res) => {
   }
 };
 
-export default { addToCart, getCart };
+const removeFromCart = async (req, res) => {
+  const { id: userId } = req.user;
+  const { productId } = req.params;
+
+  // #swagger.tags = ['Cart']
+  // #swagger.description = 'Remove item from cart'
+
+  try {
+    const deleted = await CartItem.destroy({
+      where: { userId, productId },
+    });
+
+    if (deleted === 0) {
+      return res.status(404).json({ message: "Товар не найден в корзине" });
+    }
+
+    res.status(200).json({ message: "Товар удалён из корзины" });
+  } catch (error) {
+    console.error("Ошибка при удалении из корзины:", error);
+    res.status(500).json({ error: "Ошибка при удалении из корзины" });
+  }
+};
+
+export default { addToCart, getCart, removeFromCart };

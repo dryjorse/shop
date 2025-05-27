@@ -497,6 +497,33 @@
           }
         }
       }
+    },
+    "/api/cart/{productId}": {
+      "delete": {
+        "tags": [
+          "Cart"
+        ],
+        "description": "Remove item from cart",
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
     }
   }
 }
