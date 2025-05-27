@@ -37,6 +37,11 @@ export default (sequelize, DataTypes) => {
       foreignKey: "categoriesId",
       as: "categories",
     });
+
+    Product.hasMany(models.CartItem, {
+      foreignKey: "productId",
+      as: "cartItems",
+    });
   };
 
   Product.prototype.toJSON = function () {

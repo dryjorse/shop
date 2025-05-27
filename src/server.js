@@ -12,7 +12,7 @@ import bcrypt from "bcryptjs";
 
 dotenv.config();
 
-const { sequelize, User, Categories } = db;
+const { sequelize, User, Categories, CartItem } = db;
 const PORT = process.env.PORT || 4000;
 
 AdminJS.registerAdapter({
@@ -82,6 +82,10 @@ const adminOptions = {
     {
       resource: Categories,
       options: { navigation: { name: "Management" }, label: "Categories" },
+    },
+    {
+      resource: CartItem,
+      options: { navigation: { name: "Management" }, label: "CartItem" },
     },
   ],
 };

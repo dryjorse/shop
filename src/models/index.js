@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import UserModel from "./user.js";
 import ProductModel from "./product.js";
 import CategoriesModel from "./categories.js";
+import CartItemModel from "./cartItem.js";
 import pg from "pg";
 
 dotenv.config();
@@ -19,6 +20,7 @@ const db = {};
 db.User = UserModel(sequelize, DataTypes);
 db.Product = ProductModel(sequelize, DataTypes);
 db.Categories = CategoriesModel(sequelize, DataTypes);
+db.CartItem = CartItemModel(sequelize, DataTypes);
 
 // Установка ассоциаций
 Object.keys(db).forEach((modelName) => {
