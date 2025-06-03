@@ -7,15 +7,11 @@
   },
   "host": "localhost:4000",
   "basePath": "/",
-  "schemes": [
-    "http"
-  ],
+  "schemes": ["http"],
   "paths": {
     "/api/auth/register": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "description": "Get auth requests",
         "parameters": [
           {
@@ -25,16 +21,16 @@
               "type": "object",
               "properties": {
                 "username": {
-                  "example": "any"
+                  "example": "string"
                 },
                 "email": {
-                  "example": "any"
+                  "example": "string"
                 },
                 "password": {
-                  "example": "any"
+                  "example": "string"
                 },
                 "avatar": {
-                  "example": "any"
+                  "example": "string"
                 }
               }
             }
@@ -55,9 +51,7 @@
     },
     "/api/auth/login": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "description": "User login",
         "parameters": [
           {
@@ -67,10 +61,10 @@
               "type": "object",
               "properties": {
                 "email": {
-                  "example": "any"
+                  "example": "string"
                 },
                 "password": {
-                  "example": "any"
+                  "example": "string"
                 }
               }
             }
@@ -91,9 +85,7 @@
     },
     "/api/auth/refresh": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "description": "Refresh token",
         "parameters": [
           {
@@ -103,7 +95,7 @@
               "type": "object",
               "properties": {
                 "refreshToken": {
-                  "example": "any"
+                  "example": "string"
                 }
               }
             }
@@ -127,9 +119,7 @@
     },
     "/api/auth/logout": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "description": "Logout user",
         "parameters": [
           {
@@ -139,7 +129,7 @@
               "type": "object",
               "properties": {
                 "refreshToken": {
-                  "example": "any"
+                  "example": "string"
                 }
               }
             }
@@ -157,9 +147,7 @@
     },
     "/api/profile/": {
       "get": {
-        "tags": [
-          "Profile"
-        ],
+        "tags": ["Profile"],
         "description": "Get the user\\'s profile",
         "responses": {
           "200": {
@@ -176,9 +164,7 @@
     },
     "/api/profile/about_me": {
       "get": {
-        "tags": [
-          "Profile"
-        ],
+        "tags": ["Profile"],
         "description": "Get the user\\'s profile",
         "responses": {
           "default": {
@@ -189,9 +175,7 @@
     },
     "/api/products/": {
       "get": {
-        "tags": [
-          "Products"
-        ],
+        "tags": ["Products"],
         "description": "Get Products",
         "responses": {
           "200": {
@@ -203,9 +187,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Products"
-        ],
+        "tags": ["Products"],
         "description": "Create Product",
         "parameters": [
           {
@@ -215,13 +197,13 @@
               "type": "object",
               "properties": {
                 "title": {
-                  "example": "any"
+                  "example": "string"
                 },
                 "description": {
-                  "example": "any"
+                  "example": "string"
                 },
                 "categoriesId": {
-                  "example": "any"
+                  "example": "string"
                 }
               }
             }
@@ -239,9 +221,7 @@
     },
     "/api/products/{id}": {
       "get": {
-        "tags": [
-          "Products"
-        ],
+        "tags": ["Products"],
         "description": "Get Products by Id",
         "parameters": [
           {
@@ -264,9 +244,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Products"
-        ],
+        "tags": ["Products"],
         "description": "Update Product",
         "parameters": [
           {
@@ -282,16 +260,16 @@
               "type": "object",
               "properties": {
                 "title": {
-                  "example": "any"
+                  "example": "string"
                 },
                 "description": {
-                  "example": "any"
+                  "example": "string"
                 },
                 "categoriesId": {
-                  "example": "any"
+                  "example": "string"
                 },
                 "userId": {
-                  "example": "any"
+                  "example": "string"
                 }
               }
             }
@@ -310,9 +288,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Products"
-        ],
+        "tags": ["Products"],
         "description": "Delete Product",
         "parameters": [
           {
@@ -362,9 +338,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Products"
-        ],
+        "tags": ["Products"],
         "description": "Remove Product Images",
         "parameters": [
           {
@@ -404,9 +378,7 @@
     },
     "/api/categories/": {
       "get": {
-        "tags": [
-          "Categories"
-        ],
+        "tags": ["Categories"],
         "description": "Get Categories",
         "responses": {
           "200": {
@@ -420,9 +392,7 @@
     },
     "/api/categories/create": {
       "post": {
-        "tags": [
-          "Categories"
-        ],
+        "tags": ["Categories"],
         "description": "Get Categories",
         "parameters": [
           {
@@ -432,7 +402,7 @@
               "type": "object",
               "properties": {
                 "title": {
-                  "example": "any"
+                  "example": "string"
                 }
               }
             }
@@ -453,9 +423,7 @@
     },
     "/api/cart": {
       "post": {
-        "tags": [
-          "Cart"
-        ],
+        "tags": ["Cart"],
         "description": "Get cart requests",
         "parameters": [
           {
@@ -465,10 +433,10 @@
               "type": "object",
               "properties": {
                 "productId": {
-                  "example": "any"
+                  "example": "string"
                 },
                 "quantity": {
-                  "example": "any"
+                  "example": "string"
                 }
               }
             }
@@ -484,9 +452,7 @@
         }
       },
       "get": {
-        "tags": [
-          "Cart"
-        ],
+        "tags": ["Cart"],
         "description": "Get cart requests",
         "responses": {
           "200": {
@@ -500,9 +466,7 @@
     },
     "/api/cart/{productId}": {
       "delete": {
-        "tags": [
-          "Cart"
-        ],
+        "tags": ["Cart"],
         "description": "Remove item from cart",
         "parameters": [
           {
