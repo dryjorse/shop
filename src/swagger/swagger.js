@@ -11,6 +11,7 @@ const doc = {
     description: "Описание API",
   },
   host: process.env.DOMEN || "localhost:4000",
+  schemes: ["https"],
 };
 
 swaggerAutogen()(outputFile, routes, doc);
