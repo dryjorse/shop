@@ -13,6 +13,18 @@ const register = async (req, res) => {
   // #swagger.tags = ['Auth']
   // #swagger.description = 'Get auth requests'
 
+  /*  #swagger.parameters['body'] = {
+      in: 'body',
+      required: true,
+      schema: {
+        $username: string,
+        $email: string,
+        $password: string,
+        avatar: string
+      }
+  }
+*/
+
   try {
     const existingEmail = await User.findOne({ where: { email } });
     const existingUsername = await User.findOne({ where: { username } });
@@ -62,6 +74,16 @@ const login = async (req, res) => {
   // #swagger.tags = ['Auth']
   // #swagger.description = 'User login'
 
+  /*  #swagger.parameters['body'] = {
+      in: 'body',
+      required: true,
+      schema: {
+        $email: string,
+        $password: string,
+      }
+  }
+*/
+
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ where: { email } });
@@ -97,6 +119,15 @@ const login = async (req, res) => {
 const refresh = async (req, res) => {
   // #swagger.tags = ['Auth']
   // #swagger.description = 'Refresh token'
+
+  /*  #swagger.parameters['body'] = {
+      in: 'body',
+      required: true,
+      schema: {
+        $refreshToken: string,
+      }
+  }
+*/
 
   const { refreshToken } = req.body;
   if (!refreshToken)
@@ -139,6 +170,15 @@ const refresh = async (req, res) => {
 const logout = async (req, res) => {
   // #swagger.tags = ['Auth']
   // #swagger.description = 'Logout user'
+
+  /*  #swagger.parameters['body'] = {
+      in: 'body',
+      required: true,
+      schema: {
+        $refreshToken: string,
+      }
+  }
+*/
 
   const { refreshToken } = req.body;
   try {

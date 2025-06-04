@@ -9,6 +9,16 @@ const addToCart = async (req, res) => {
   // #swagger.tags = ['Cart']
   // #swagger.description = 'Get cart requests'
 
+  /*  #swagger.parameters['body'] = {
+      in: 'body',
+      required: true,
+      schema: {
+        $productId: string,
+        $quantity: string,
+      }
+  }
+*/
+
   try {
     const [item, created] = await CartItem.findOrCreate({
       where: { userId, productId },

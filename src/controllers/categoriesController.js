@@ -17,6 +17,15 @@ const getCategories = async (req, res) => {
 const createCategoria = async (req, res) => {
   // #swagger.tags = ['Categories']
   // #swagger.description = 'Get Categories'
+
+  /*  #swagger.parameters['body'] = {
+      in: 'body',
+      required: true,
+      schema: {
+        $title: string,
+      }
+  }
+*/
   try {
     const { title } = req.body;
 

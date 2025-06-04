@@ -96,6 +96,17 @@ class ProductController {
   async createProduct(req, res) {
     // #swagger.tags = ['Products']
     // #swagger.description = 'Create Product'
+
+    /*  #swagger.parameters['body'] = {
+      in: 'body',
+      required: true,
+      schema: {
+        $title: string,
+        $description: string,
+        $categoriesId: string,
+      }
+  }
+*/
     const { title, description, categoriesId } = req.body;
 
     try {
@@ -125,6 +136,18 @@ class ProductController {
   async updateProduct(req, res) {
     // #swagger.tags = ['Products']
     // #swagger.description = 'Update Product'
+
+    /*  #swagger.parameters['body'] = {
+      in: 'body',
+      required: true,
+      schema: {
+        $title: string,
+        $description: string,
+        $categoriesId: string,
+        $userId: string,
+      }
+  }
+*/
     const { id } = req.params;
     const { title, description, categoriesId, userId } = req.body;
 
@@ -276,6 +299,15 @@ class ProductController {
   async removeGalleryImage(req, res) {
     // #swagger.tags = ['Products']
     // #swagger.description = 'Remove Product Images'
+
+    /*  #swagger.parameters['body'] = {
+      in: 'body',
+      required: true,
+      schema: {
+        $imageIndex: number,
+      }
+  }
+*/
     const { id } = req.params;
     const { imageIndex } = req.body;
     try {
