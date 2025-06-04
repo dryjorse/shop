@@ -120,7 +120,6 @@ export const productResource = {
               const imageUrl = record.params[imageKey];
               if (imageUrl) galleryImageUrls.push(imageUrl);
             }
-
             // Обработка удаления файлов (код удаления файлов)
           }
           return response;

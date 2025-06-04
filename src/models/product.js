@@ -9,7 +9,7 @@ export default (sequelize, DataTypes) => {
     image: {
       type: DataTypes.TEXT,
       allowNull: false,
-      defaultValue: "[]",
+      defaultValue: "",
     },
     images: {
       type: DataTypes.JSON,
@@ -37,11 +37,6 @@ export default (sequelize, DataTypes) => {
       foreignKey: "categoriesId",
       as: "categories",
     });
-
-    Product.hasMany(models.CartItem, {
-      foreignKey: "productId",
-      as: "cartItems",
-    });
   };
 
   Product.prototype.toJSON = function () {
@@ -50,16 +45,19 @@ export default (sequelize, DataTypes) => {
     if (values.image) {
       try {
         // Парсим JSON строку в массив
-        const imageArray = JSON.parse(values.image);
 
-        if (Array.isArray(imageArray) && imageArray.length > 0) {
-          // Формируем URL для первого изображения
-          values.image = `${
+        console.log(values.image);
+
+        let image =
+          values.image[0] === "[" ? JSON.parse(values.image) : values.image;
+
+        if (!(Array.isArray(image) ? image[0] : image).includes("http")) {
+          image = `${
             process.env.BASE_URL || "http://localhost:4000"
-          }/products/${imageArray[0]}`;
-        } else {
-          values.image = null;
+          }/products/${Array.isArray(image) ? image[0] : image}`;
         }
+
+        values.image = image;
       } catch (e) {
         console.error("Ошибка при обработке поля image:", e);
         values.image = null;
@@ -73,13 +71,15 @@ export default (sequelize, DataTypes) => {
           ? values.images
           : JSON.parse(values.images || "[]");
 
+        console.log(values.images);
+
         // Формируем массив URL изображений
-        values.images = imagesArray.map(
-          (img) =>
-            `${
-              process.env.BASE_URL || "http://localhost:4000"
-            }/products-gallery/${img}`
-        );
+        values.images = imagesArray.map((img) => {
+          if (img.includes("http")) return img;
+          return `${
+            process.env.BASE_URL || "http://localhost:4000"
+          }/products-gallery/${img}`;
+        });
       } catch (e) {
         console.error("Ошибка при обработке поля images:", e);
         values.images = [];

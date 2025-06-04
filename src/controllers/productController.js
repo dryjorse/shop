@@ -143,7 +143,6 @@ class ProductController {
       if (description) updateData.description = description;
       if (categoriesId) updateData.categoriesId = categoriesId;
       if (userId) updateData.userId = userId;
-
       // Если есть основное изображение
       if (req.file) {
         updateData.image = JSON.stringify([req.filePath]);
@@ -228,13 +227,17 @@ class ProductController {
 
       // Получаем текущие изображения из галереи с корректной обработкой ошибок
       let currentImages = [];
+
       try {
         if (product.images) {
           // Пробуем разобрать JSON
-          currentImages = JSON.parse(product.images);
+
+          console.log(product.images);
 
           // Проверяем, что получили массив
-          if (!Array.isArray(currentImages)) {
+          if (Array.isArray(currentImages)) {
+            currentImages = JSON.parse(product.images);
+          } else {
             currentImages = [];
           }
         }
@@ -275,7 +278,6 @@ class ProductController {
     // #swagger.description = 'Remove Product Images'
     const { id } = req.params;
     const { imageIndex } = req.body;
-
     try {
       // Ищем продукт
       const product = await Product.findByPk(id);
