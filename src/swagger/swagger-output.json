@@ -5,9 +5,9 @@
     "description": "Описание API",
     "version": "1.0.0"
   },
-  "host": "localhost:4000",
+  "host": "nu.tipo.lol",
   "basePath": "/",
-  "schemes": ["http"],
+  "schemes": ["https"],
   "paths": {
     "/api/auth/register": {
       "post": {
@@ -21,16 +21,16 @@
               "type": "object",
               "properties": {
                 "username": {
-                  "example": "string"
+                  "example": "any"
                 },
                 "email": {
-                  "example": "string"
+                  "example": "any"
                 },
                 "password": {
-                  "example": "string"
+                  "example": "any"
                 },
                 "avatar": {
-                  "example": "string"
+                  "example": "any"
                 }
               }
             }
