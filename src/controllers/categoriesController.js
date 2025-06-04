@@ -22,7 +22,7 @@ const createCategoria = async (req, res) => {
       in: 'body',
       required: true,
       schema: {
-        $title: string,
+        $title: 'string',
       }
   }
 */

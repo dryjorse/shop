@@ -101,9 +101,9 @@ class ProductController {
       in: 'body',
       required: true,
       schema: {
-        $title: string,
-        $description: string,
-        $categoriesId: string,
+        $title: 'string',
+        $description: 'string',
+        $categoriesId: 'string',
       }
   }
 */
@@ -141,10 +141,10 @@ class ProductController {
       in: 'body',
       required: true,
       schema: {
-        $title: string,
-        $description: string,
-        $categoriesId: string,
-        $userId: string,
+        $title: 'string',
+        $description: 'string',
+        $categoriesId: 'string',
+        $userId: 'string',
       }
   }
 */
@@ -304,7 +304,7 @@ class ProductController {
       in: 'body',
       required: true,
       schema: {
-        $imageIndex: number,
+        $imageIndex: 'number',
       }
   }
 */

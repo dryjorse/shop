@@ -17,10 +17,10 @@ const register = async (req, res) => {
       in: 'body',
       required: true,
       schema: {
-        $username: string,
-        $email: string,
-        $password: string,
-        avatar: string
+        $username: 'string',
+        $email: 'string',
+        $password: 'string',
+        avatar: 'string'
       }
   }
 */
@@ -78,8 +78,8 @@ const login = async (req, res) => {
       in: 'body',
       required: true,
       schema: {
-        $email: string,
-        $password: string,
+        $email: 'string',
+        $password: 'string',
       }
   }
 */
@@ -124,7 +124,7 @@ const refresh = async (req, res) => {
       in: 'body',
       required: true,
       schema: {
-        $refreshToken: string,
+        $refreshToken: 'string',
       }
   }
 */
@@ -175,7 +175,7 @@ const logout = async (req, res) => {
       in: 'body',
       required: true,
       schema: {
-        $refreshToken: string,
+        $refreshToken: 'string',
       }
   }
 */

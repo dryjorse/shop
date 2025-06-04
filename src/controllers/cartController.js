@@ -13,8 +13,8 @@ const addToCart = async (req, res) => {
       in: 'body',
       required: true,
       schema: {
-        $productId: string,
-        $quantity: string,
+        $productId: 'string',
+        $quantity: 'string',
       }
   }
 */
