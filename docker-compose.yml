@@ -15,7 +15,7 @@ services:
     depends_on:
       - db
     env_file: .env
-    command: ["sh", "-c", "node src/swagger/swagger.js && node src/server.js"]
+    command: ["sh", "-c", "node src/server.js"]
 
 volumes:
   pgdata:
